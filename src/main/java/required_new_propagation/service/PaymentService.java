@@ -26,7 +26,7 @@ public class PaymentService {
         }
 
         // 결제 게이트웨이 호출 시, 지연을 가정.
-        Thread.sleep(150);
+        Thread.sleep(100);
 
         Random random = new Random();
         if (random.nextDouble() <= 0.05) {

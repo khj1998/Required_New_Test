@@ -1,0 +1,16 @@
+services:
+  app:
+    build: .
+    container_name: order-app
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5432/order
+      - SPRING_DATASOURCE_USERNAME=db_user
+      - SPRING_DATASOURCE_PASSWORD=db_password
+    networks:
+      - order-network
+
+networks:
+  order-network:
+    external: true

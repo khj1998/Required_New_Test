@@ -17,7 +17,7 @@ public class NotificationService {
         log.info("[ Notification ] 알림 발송 시작 (비동기) - Transaction ID: {}", transactionId);
 
         try {
-            Thread.sleep(300);
+            Thread.sleep(100);
 
             Random random = new Random();
             if (random.nextDouble() <= 0.05) {
