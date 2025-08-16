@@ -16,7 +16,7 @@ import required_new_propagation.repository.OrderFailLogRepository;
 public class OrderFailureEventListener {
     private final OrderFailLogRepository orderFailLogRepository;
 
-    @Async
+    @Async("myAsyncExecutor")
     @EventListener
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void handle(OrderFailureEvent event) {

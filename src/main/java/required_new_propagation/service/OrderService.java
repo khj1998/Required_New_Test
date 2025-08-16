@@ -26,7 +26,9 @@ public class OrderService {
     private final ProductRepository productRepository;
     private final OrderRepository orderRepository;
     private final PaymentService paymentService;
+    private final CouponService couponService;
     private final ApplicationEventPublisher eventPublisher;
+    private final NotificationService notificationService;
 
     @Transactional
     public void createOrder(OrderRequest req) {
@@ -48,9 +50,15 @@ public class OrderService {
             }
 
             BigDecimal totalAmount = product.getTotalAmount(req.getQuantity(),req.getRequestedPoint());
+            BigDecimal couponDiscountAmount = couponService.getCouponDiscountAmount(totalAmount,req);
+            totalAmount = totalAmount.subtract(couponDiscountAmount);
 
             user.usePoint(req.getRequestedPoint());
             product.decreaseStock(req.getQuantity());
+
+            paymentService.processPayment(user,totalAmount,req.getTransactionId());
+
+            notificationService.sendNotification(user.getUserId(),req.getTransactionId());
 
             Order order = Order.builder()
                     .user(user)
@@ -60,8 +68,6 @@ public class OrderService {
                     .totalAmount(totalAmount)
                     .status(OrderStatus.PENDING)
                     .build();
-
-            paymentService.processPayment(user,totalAmount,req.getTransactionId());
 
             orderRepository.save(order);
 

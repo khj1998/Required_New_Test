@@ -10,5 +10,6 @@ public class OrderRequest {
     private Long userId;
     private int quantity;
     private BigDecimal requestedPoint;
+    private String couponCode;
     private String transactionId;
 }
