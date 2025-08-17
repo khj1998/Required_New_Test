@@ -17,4 +17,7 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         show_sql: false
         format_sql: false
+        jdbc:
+          batch_size: 500
+        order_inserts: true
     defer-datasource-initialization: true

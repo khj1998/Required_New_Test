@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import required_new_propagation.exception.DomainException;
 import required_new_propagation.vo.DiscountType;
 
@@ -42,6 +44,16 @@ public class Coupon {
 
     @Column(nullable = false)
     private boolean isActive;
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
+
+    public Long getCouponId() {
+        return this.id;
+    }
 
     public DiscountType getDiscountType() {
         return this.discountType;

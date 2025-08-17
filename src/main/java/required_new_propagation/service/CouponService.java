@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import required_new_propagation.dto.req.OrderRequest;
+import required_new_propagation.dto.res.CouponResponse;
 import required_new_propagation.entity.Coupon;
 import required_new_propagation.exception.DomainException;
 import required_new_propagation.repository.CouponRepository;
@@ -19,6 +20,14 @@ import java.math.BigDecimal;
 public class CouponService {
     private final CouponRepository couponRepository;
     private final CouponDiscountPolicyFactory couponDiscountPolicyFactory;
+
+    @Transactional
+    public CouponResponse getCoupon(Long couponId) {
+        Coupon coupon = couponRepository.findById(couponId)
+                .orElseThrow(() -> new DomainException("","존재하지 않는 쿠폰입니다."));
+
+        return CouponResponse.of(coupon);
+    }
 
     @Transactional
     public BigDecimal getCouponDiscountAmount(BigDecimal originalAmount, OrderRequest req) {
