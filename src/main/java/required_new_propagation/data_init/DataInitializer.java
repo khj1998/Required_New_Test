@@ -44,6 +44,7 @@ public class DataInitializer implements CommandLineRunner {
 
         List<Product> products = fixtureMonkey.giveMeBuilder(Product.class)
                 .setNull("id")
+                .set("name",Arbitraries.strings().alpha().ofMaxLength(32))
                 .set("price", Arbitraries.bigDecimals().between(new BigDecimal("100"), new BigDecimal("1000000")))
                 .set("stock", Arbitraries.integers().between(50, 1000))
                 .sampleList(100000);
