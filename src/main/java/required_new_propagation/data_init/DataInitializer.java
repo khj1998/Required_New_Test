@@ -1,6 +1,5 @@
 package required_new_propagation.data_init;
 
-import com.navercorp.fixturemonkey.FixtureMonkey;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,59 +9,54 @@ import org.springframework.stereotype.Component;
 import required_new_propagation.entity.Coupon;
 import required_new_propagation.entity.Product;
 import required_new_propagation.entity.User;
-import required_new_propagation.repository.CouponRepository;
-import required_new_propagation.repository.ProductRepository;
-import required_new_propagation.repository.UserRepository;
+import required_new_propagation.repository.bulk_insert.BulkRepositoryExecutor;
+import required_new_propagation.repository.bulk_insert.parameter.ParameterSupplier;
 import required_new_propagation.vo.DiscountType;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class DataInitializer implements CommandLineRunner {
-    private final UserRepository userRepository;
-    private final ProductRepository productRepository;
-    private final CouponRepository couponRepository;
-    private final FixtureMonkey fixtureMonkey;
+    private final BulkRepositoryExecutor bulkRepositoryExecutor;
 
     @Override
     @Transactional
-    public void run(String... args) {
+    public void run(String... args){
         log.info("[ Fixture Monkey를 사용해 테스트용 User 데이터 생성을 시작 ]");
 
-        List<User> testUsers = fixtureMonkey.giveMeBuilder(User.class)
-                .setNull("id")
-                .set("point",Arbitraries.bigDecimals().between(new BigDecimal("1000"),new BigDecimal("100000")))
-                .sampleList(100000);
-        userRepository.saveAll(testUsers);
+        Map<String, ParameterSupplier<?>> userParams = new HashMap<>();
+        userParams.put("point", () -> Arbitraries.bigDecimals().between(new BigDecimal("1000"), new BigDecimal("100000")).sample());
+        bulkRepositoryExecutor.execute(User.class, 100000,500,userParams);
+
 
         log.info("[ Fixture Monkey를 사용해 테스트용 Product 데이터 생성을 시작 ]");
 
-        List<Product> products = fixtureMonkey.giveMeBuilder(Product.class)
-                .setNull("id")
-                .set("name",Arbitraries.strings().alpha().ofMaxLength(32))
-                .set("price", Arbitraries.bigDecimals().between(new BigDecimal("100"), new BigDecimal("1000000")))
-                .set("stock", Arbitraries.integers().between(50, 1000))
-                .sampleList(100000);
-        productRepository.saveAll(products);
+        Map<String, ParameterSupplier<?>> productParams = new HashMap<>();
+        productParams.put("name", () -> Arbitraries.strings().alpha().ofMaxLength(32).sample());
+        productParams.put("price", () -> Arbitraries.bigDecimals().between(new BigDecimal("100"), new BigDecimal("1000000")).sample());
+        productParams.put("stock", () -> Arbitraries.integers().between(50, 1000).sample());
+        bulkRepositoryExecutor.execute(Product.class,100000,500,productParams);
+
 
         log.info("[ Fixture Monkey를 사용해 테스트용 Coupon 데이터 생성을 시작 ]");
 
-        List<Coupon> coupons = fixtureMonkey.giveMeBuilder(Coupon.class)
-                .setNull("id")
-                .set("code", UUID.randomUUID().toString())
-                .set("validFrom", LocalDateTime.now().minusDays(10))
-                .set("validUntil", LocalDateTime.now().plusDays(20))
-                .set("isActive", true)
-                .set("discountType",Arbitraries.of(DiscountType.PERCENTAGE,DiscountType.FIXED_AMOUNT))
-                .set("discountRate",Arbitraries.bigDecimals().between(new BigDecimal("10"),new BigDecimal("50")))
-                .set("discountAmount",Arbitraries.bigDecimals().between(new BigDecimal("1000"),new BigDecimal("5000")))
-                .sampleList(10000);
+        Map<String, ParameterSupplier<?>> couponParams = new HashMap<>();
+        couponParams.put("code", () -> UUID.randomUUID().toString());
+        couponParams.put("validFrom", () -> LocalDateTime.now().minusDays(10));
+        couponParams.put("validUntil", () -> LocalDateTime.now().plusDays(20));
+        couponParams.put("isActive", () -> true);
+        couponParams.put("discountType", () -> Arbitraries.of(DiscountType.PERCENTAGE, DiscountType.FIXED_AMOUNT).sample());
+        couponParams.put("discountRate", () -> Arbitraries.bigDecimals().between(new BigDecimal("10"), new BigDecimal("50")).sample());
+        couponParams.put("discountAmount", () -> Arbitraries.bigDecimals().between(new BigDecimal("1000"), new BigDecimal("5000")).sample());
 
-        couponRepository.saveAll(coupons);
+        bulkRepositoryExecutor.execute(Coupon.class, 1000, 500, couponParams);
+
+        log.info("[ 모든 테스트 데이터 생성 완료 ]");
     }
 }
