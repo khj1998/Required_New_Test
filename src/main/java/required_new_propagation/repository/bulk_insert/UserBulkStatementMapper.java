@@ -1,24 +1,18 @@
 package required_new_propagation.repository.bulk_insert;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 import required_new_propagation.entity.User;
-import required_new_propagation.repository.bulk_insert.parameter.ParameterSupplier;
 
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Map;
 
-@Repository
-@RequiredArgsConstructor
-public class UserBulkRepository extends AbstractJdbcBulkRepository<User> {
-    private final JdbcTemplate jdbcTemplate;
-
-    @Override
-    protected JdbcTemplate getJdbcTemplate() {
-        return this.jdbcTemplate;
+@Component
+public class UserBulkStatementMapper extends AbstractJdbcBulkRepository<User> {
+    public UserBulkStatementMapper(JdbcTemplate jdbcTemplate) {
+        super(jdbcTemplate);
     }
 
     @Override

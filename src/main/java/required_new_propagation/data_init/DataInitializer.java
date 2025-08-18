@@ -10,7 +10,6 @@ import required_new_propagation.entity.Coupon;
 import required_new_propagation.entity.Product;
 import required_new_propagation.entity.User;
 import required_new_propagation.repository.bulk_insert.BulkRepositoryExecutor;
-import required_new_propagation.repository.bulk_insert.parameter.ParameterSupplier;
 import required_new_propagation.vo.DiscountType;
 
 import java.math.BigDecimal;
