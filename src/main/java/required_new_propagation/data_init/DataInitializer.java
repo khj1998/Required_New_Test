@@ -30,30 +30,30 @@ public class DataInitializer implements CommandLineRunner {
     public void run(String... args){
         log.info("[ Fixture Monkey를 사용해 테스트용 User 데이터 생성을 시작 ]");
 
-        Map<String, ParameterSupplier<?>> userParams = new HashMap<>();
-        userParams.put("point", () -> Arbitraries.bigDecimals().between(new BigDecimal("1000"), new BigDecimal("100000")).sample());
+        Map<String, Object> userParams = new HashMap<>();
+        userParams.put("point", Arbitraries.bigDecimals().between(new BigDecimal("1000"), new BigDecimal("100000")).sample());
         bulkRepositoryExecutor.execute(User.class, 100000,500,userParams);
 
 
         log.info("[ Fixture Monkey를 사용해 테스트용 Product 데이터 생성을 시작 ]");
 
-        Map<String, ParameterSupplier<?>> productParams = new HashMap<>();
-        productParams.put("name", () -> Arbitraries.strings().alpha().ofMaxLength(32).sample());
-        productParams.put("price", () -> Arbitraries.bigDecimals().between(new BigDecimal("100"), new BigDecimal("1000000")).sample());
-        productParams.put("stock", () -> Arbitraries.integers().between(50, 1000).sample());
+        Map<String, Object> productParams = new HashMap<>();
+        productParams.put("name", Arbitraries.strings().alpha().ofMaxLength(32).sample());
+        productParams.put("price",Arbitraries.bigDecimals().between(new BigDecimal("100"), new BigDecimal("1000000")).sample());
+        productParams.put("stock",Arbitraries.integers().between(50, 1000).sample());
         bulkRepositoryExecutor.execute(Product.class,100000,500,productParams);
 
 
         log.info("[ Fixture Monkey를 사용해 테스트용 Coupon 데이터 생성을 시작 ]");
 
-        Map<String, ParameterSupplier<?>> couponParams = new HashMap<>();
-        couponParams.put("code", () -> UUID.randomUUID().toString());
-        couponParams.put("validFrom", () -> LocalDateTime.now().minusDays(10));
-        couponParams.put("validUntil", () -> LocalDateTime.now().plusDays(20));
-        couponParams.put("isActive", () -> true);
-        couponParams.put("discountType", () -> Arbitraries.of(DiscountType.PERCENTAGE, DiscountType.FIXED_AMOUNT).sample());
-        couponParams.put("discountRate", () -> Arbitraries.bigDecimals().between(new BigDecimal("10"), new BigDecimal("50")).sample());
-        couponParams.put("discountAmount", () -> Arbitraries.bigDecimals().between(new BigDecimal("1000"), new BigDecimal("5000")).sample());
+        Map<String, Object> couponParams = new HashMap<>();
+        couponParams.put("code",UUID.randomUUID().toString());
+        couponParams.put("validFrom",LocalDateTime.now().minusDays(10));
+        couponParams.put("validUntil",LocalDateTime.now().plusDays(20));
+        couponParams.put("isActive",true);
+        couponParams.put("discountType",Arbitraries.of(DiscountType.PERCENTAGE, DiscountType.FIXED_AMOUNT).sample());
+        couponParams.put("discountRate",Arbitraries.bigDecimals().between(new BigDecimal("10"), new BigDecimal("50")).sample());
+        couponParams.put("discountAmount",Arbitraries.bigDecimals().between(new BigDecimal("1000"), new BigDecimal("5000")).sample());
 
         bulkRepositoryExecutor.execute(Coupon.class, 1000, 500, couponParams);
 

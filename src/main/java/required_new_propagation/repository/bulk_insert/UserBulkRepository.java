@@ -32,7 +32,7 @@ public class UserBulkRepository extends AbstractJdbcBulkRepository<User> {
     }
 
     @Override
-    protected void setParameters(PreparedStatement ps, Map<String, ParameterSupplier<?>> suppliers) throws SQLException {
-        ps.setBigDecimal(1, (BigDecimal) suppliers.get("point").get());
+    protected void setParameters(PreparedStatement ps, Map<String, Object> params) throws SQLException {
+        ps.setBigDecimal(1, (BigDecimal) params.get("point"));
     }
 }

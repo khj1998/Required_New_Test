@@ -32,9 +32,9 @@ public class ProductBulkRepository extends AbstractJdbcBulkRepository<Product> {
     }
 
     @Override
-    protected void setParameters(PreparedStatement ps, Map<String, ParameterSupplier<?>> suppliers) throws SQLException {
-        ps.setString(1, (String) suppliers.get("name").get());
-        ps.setBigDecimal(2, (BigDecimal) suppliers.get("price").get());
-        ps.setInt(3, (Integer) suppliers.get("stock").get());
+    protected void setParameters(PreparedStatement ps, Map<String, Object> params) throws SQLException {
+        ps.setString(1, (String) params.get("name"));
+        ps.setBigDecimal(2, (BigDecimal) params.get("price"));
+        ps.setInt(3, (Integer) params.get("stock"));
     }
 }

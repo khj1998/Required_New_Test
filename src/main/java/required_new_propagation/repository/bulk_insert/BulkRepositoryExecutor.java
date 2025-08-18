@@ -3,7 +3,6 @@ package required_new_propagation.repository.bulk_insert;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import required_new_propagation.repository.bulk_insert.parameter.ParameterSupplier;
 
 import java.util.List;
 import java.util.Map;
@@ -14,7 +13,7 @@ public class BulkRepositoryExecutor {
     private final List<BulkRepository<?>> bulkRepositories;
 
     @Transactional
-    public <T> void execute(Class<T> entityType, int totalSize,int batchSize ,Map<String, ParameterSupplier<?>> parameterSuppliers) {
+    public <T> void execute(Class<T> entityType, int totalSize,int batchSize,Map<String, Object> params) {
         if (totalSize <= 0) {
             return;
         }
@@ -23,7 +22,7 @@ public class BulkRepositoryExecutor {
 
         for (int i = 0; i < totalSize; i += batchSize) {
             int currentBatchSize = Math.min(batchSize, totalSize - i);
-            targetRepository.saveAllInBatch(currentBatchSize, parameterSuppliers);
+            targetRepository.saveAllInBatch(currentBatchSize, params);
         }
     }
 
