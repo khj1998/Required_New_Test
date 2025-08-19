@@ -31,12 +31,12 @@ public class CouponService {
 
     @Transactional
     public BigDecimal getCouponDiscountAmount(BigDecimal originalAmount, OrderRequest req) {
-        String couponCode = req.getCouponCode();
+        Long couponId = req.getCouponId();
         String transactionId = req.getTransactionId();
 
-        log.info("코드 {} 쿠폰 적용을 시작합니다. 시작 전 결재 금액 : {}",couponCode,originalAmount);
+        log.info("코드 {} 쿠폰 적용을 시작합니다. 시작 전 결재 금액 : {}",couponId,originalAmount);
 
-        Coupon coupon = couponRepository.findByCode(couponCode)
+        Coupon coupon = couponRepository.findById(couponId)
                 .orElseThrow(() -> new DomainException(transactionId,"존재하지 않는 쿠폰입니다."));
 
         if (!coupon.isActive()) {
@@ -51,7 +51,7 @@ public class CouponService {
         BigDecimal couponDiscountAmount = couponDiscountPolicy.getDiscountAmount(originalAmount,coupon);
 
         coupon.markUsedCoupon();
-        log.info("코드 {} 쿠폰 적용을 완료.",couponCode);
+        log.info("ID : {} 쿠폰 적용을 완료.",couponId);
 
         return couponDiscountAmount;
     }
