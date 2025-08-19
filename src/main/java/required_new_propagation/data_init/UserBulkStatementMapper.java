@@ -1,5 +1,6 @@
-package required_new_propagation.repository.bulk_insert;
+package required_new_propagation.data_init;
 
+import jdbc_bulk_insert_library.jdbc.AbstractJdbcBulkRepository;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import required_new_propagation.entity.User;
