@@ -1,10 +1,15 @@
 FROM gradle:8.5-jdk17 AS builder
 WORKDIR /build
 
-COPY build.gradle settings.gradle /build/
-COPY src /build/src
+COPY build.gradle settings.gradle gradlew ./
+COPY gradle ./gradle
 
-RUN gradle build --no-daemon -x test
+RUN ./gradlew dependencies --no-daemon
+
+COPY src ./src
+COPY libs ./libs
+
+RUN ./gradlew clean build --no-daemon -x test
 
 FROM openjdk:17-jdk-slim
 WORKDIR /app
